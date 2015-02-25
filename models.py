@@ -27,3 +27,7 @@ class Comment(EmbeddedDocument):
     created_at = DateTimeField(default=datetime.datetime.now, required=True)
     body = StringField(verbose_name="Comment", required=True)
     author = StringField(verbose_name="Name", max_length=255, required=True)
+
+class Credentials(Document):
+    name = StringField(max_length = 255, primary_key = True)
+    key = StringField(max_length = 255, required = True)

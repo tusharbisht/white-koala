@@ -1,10 +1,10 @@
 __author__ = 'ashutosh.banerjee'
 from flask import Blueprint, request, redirect, render_template, url_for, jsonify, Response
 from flask.views import MethodView
-from delmart.models import Shipment, Comment
+from delmart.models import Shipment, Comment, Credentials
 from data_transfer.shipment_dto import ShipmentDto
 from mongoengine.fields import *
-
+from delmart.hello import app
 from flask import make_response
 
 import json
@@ -47,6 +47,9 @@ class ListView(MethodView):
         # return jsonify({"shipments":shipments})
 
     def post(self):
+        valid_key = current_user()
+        if valid_key = False:
+            # return authentication error
         a= {}
         a['shipment_id'] = "1234"
         a['body'] = '16254'
@@ -64,6 +67,13 @@ class DetailView(MethodView):
         shipments = Shipment.objects.get_or_404(shipment_id=shipment_id)
         return shipments
 
+
+def Authenticate():
+    request_key = request.json.get('authentication_key');
+    if Credentials.objects(key=request_key):
+        return True 
+    else :
+        return False
 
 def field_value(field, value):
   '''
@@ -106,3 +116,15 @@ def update_document(doc, data):
 
 shipments.add_url_rule('/', view_func=ListView.as_view('list'))
 shipments.add_url_rule('/<shipment_id>/', view_func=DetailView.as_view('detail'))
+
+@app.route('/register', methods=('GET', 'POST'))
+def register():
+  if request.method == 'POST':
+    username = request.form.get('username')
+	  key = request.form.get('key')
+    #other fields
+    credential = Credentials(username = username, key = key);
+    credential.save();
+  else:
+    # Registration form
+
